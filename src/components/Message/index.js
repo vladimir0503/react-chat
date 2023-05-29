@@ -24,14 +24,24 @@ const Message = ({
 }) => {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
+    const [currentTime, setCurrentTime] = React.useState('0.00');
 
     const playRef = React.useRef(null);
 
-    const fillProgress = duration => {
-        const time = duration * 15;
+    // const fillProgress = duration => {
+    //     const time = duration * 15;
+    //     const step = (100 - 0) / time;
+    //     intervalId = setInterval(() => {
+    //         setProgress(progress => progress + step);
+    //     }, time);
+    // };
+
+    const fillProgress = audio => {
+        const time = audio.duration * 15;
         const step = (100 - 0) / time;
         intervalId = setInterval(() => {
             setProgress(progress => progress + step);
+            setCurrentTime(audio.currentTime.toFixed(2));
         }, time);
     };
 
@@ -44,7 +54,8 @@ const Message = ({
 
         if (!isPlaying) {
             playRef.current.play();
-            fillProgress(duration);
+            // fillProgress(duration);
+            fillProgress(playRef.current);
         } else {
             playRef.current.pause();
             clearInterval(intervalId);
@@ -55,6 +66,7 @@ const Message = ({
         setIsPlaying(false);
         setProgress(0);
         clearInterval(intervalId);
+        setCurrentTime('0.00');
     };
 
     React.useEffect(() => {
@@ -106,7 +118,7 @@ const Message = ({
                                             <div className="message__audio-wave">
                                                 <img src={waveSvg} alt='Wave svg' />
                                             </div>
-                                            <span className='message__audio-duration'>00:19</span>
+                                            <span className='message__audio-duration'>{currentTime}</span>
                                         </div>
                                     </div>
                         }
